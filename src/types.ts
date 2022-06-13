@@ -15,7 +15,7 @@ import {
 
 
 
-export type EncodeFunc<T> = (buf: WriteBuffer, v: T) => void;
+export type EncodeFunc<T> = (buf: WriteBuffer, v: T, ord?:number) => void;
 export type DecodeFunc<T> = (buf: ReadBuffer) => T;
 
 export interface Type<T> {
@@ -369,10 +369,12 @@ export function Struct(fields: Fields): Type<Obj<any>> {
 
 
 export function unionEncoder(branches: Branches): EncodeFunc<any> {
-	return (buf: WriteBuffer, v: any): void => {
+	return (buf: WriteBuffer, v: any, ord:number | undefined): void => {
 		putArrHeader(buf, 2);
 
-		const ord = branches.ordinalOf(v);
+		if (ord === undefined) {
+			ord = branches.ordinalOf(v);
+		}
 		Int.enc(buf, ord);
 		branches[ord].enc(buf, v);
 	};
