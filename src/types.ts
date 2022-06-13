@@ -296,7 +296,7 @@ export function TypedArr<T>(valueT: Type<T>): Collection<T[]> {
 		},
 
 		dec(buf: ReadBuffer): T[] {
-			const res = [];
+			const res:T[] = [];
 			for(let n = getArrHeader(buf); n > 0; --n) {
 				res.push(valueT.dec(buf));
 			}
@@ -377,6 +377,8 @@ export function unionEncoder(branches: Branches): EncodeFunc<any> {
 		branches[ord].enc(buf, v);
 	};
 }
+
+
 
 export function unionDecoder(branches: Branches): DecodeFunc<any> {
 	return (buf: ReadBuffer): any => {
